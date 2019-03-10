@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/config"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -16,7 +17,12 @@ func M_init() {
 	sqluser := Get_config("sqluser")
 	sqlpass := Get_config("sqlpass")
 
-	//beego.Debug(sqluser + ":" + sqlpass + "@tcp(" + baseaddress + ":" + baseport + ")/" + basename + "?charset=utf8")
+	if len(baseaddress) == 0 || len(baseport) == 0 || len(basename) == 0 || len(sqluser) == 0 || len(sqlpass) == 0 {
+		beego.Debug("数据库配置文件读取错误,请检查conf/config.ini下的设置")
+		return
+	}
+
+	beego.Debug(sqluser + ":" + sqlpass + "@tcp(" + baseaddress + ":" + baseport + ")/" + basename + "?charset=utf8")
 	orm.RegisterDataBase("default", "mysql", sqluser+":"+sqlpass+"@tcp("+baseaddress+":"+baseport+")/"+basename+"?charset=utf8", 200, 200)
 	//orm.RegisterModel(new(User))
 }
@@ -28,6 +34,19 @@ func M_Using(dbname string) {
 }
 
 //获取有返回值的sql语句，比如select, shwo database
+/*调用DEMO
+func Update_Adwords() {
+	AdWords = make(map[string]string) //清空
+	sqlcmd := "select id,adword from adword;"
+	err, rs := Getrs(sqlcmd)
+	if err == nil {
+		for _, row := range rs {
+			id := fmt.Sprintf("%s", row["id"])
+			adword := fmt.Sprintf("%s", row["adword"])
+			AdWords[id] = adword
+		}
+	}
+}*/
 func Getrs(sqlcmd string) (err error, rs []orm.Params) {
 	o := orm.NewOrm()
 	_, err = o.Raw(sqlcmd).Values(&rs)
@@ -104,6 +123,6 @@ func Get_config(key string) string {
 		beego.Debug("new config failed, err:", err)
 		return ""
 	}
-	ret := conf.String("config::" + key)
+	ret := conf.String("ini::" + key)
 	return ret
 }
