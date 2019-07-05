@@ -126,6 +126,19 @@ func file_path(pathx string) string {
 	return paths
 }
 
+// CreateDateDir 根据当前日期来创建文件夹
+func CreateDateDir(Path string) string {
+	//folderName := time.Now().Format("20060102")
+	//folderPath := filepath.Join(Path, folderName)
+	folderPath := Path
+	if _, err := os.Stat(folderPath); os.IsNotExist(err) {
+		// 必须分成两步：先创建文件夹、再修改权限
+		os.Mkdir(folderPath, 0777) //0777也可以os.ModePerm
+		os.Chmod(folderPath, 0777)
+	}
+	return folderPath
+}
+
 /*获取当前时间*/
 func Gettime() string {
 	Year := time.Now().Year()     //年[:3]
@@ -195,4 +208,13 @@ func Md5str(mingwen_text string) string {
 	has := md5.Sum(data)
 	md5str1 := fmt.Sprintf("%x", has)
 	return md5str1
+}
+
+//字符串转整数
+func StrToInt(numstr string) int64 {
+	s, err := strconv.ParseInt(numstr, 10, 64)
+	if err == nil {
+		return s
+	}
+	return 0
 }
