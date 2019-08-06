@@ -8,9 +8,6 @@ import (
 
 //初始化连接
 func M_init() {
-	//beego.Debug("m_init")
-	//orm.RegisterDataBase("default", "mysql", "server02:root@123...@tcp(127.0.0.1:3306)/square?charset=utf8", 50, 50)
-	//orm.RegisterDataBase("default", "mysql", "root:Abcf8765D5@tcp(rm-bp14tynb2bq1gg55k2o.mysql.rds.aliyuncs.com:3306)/power-pay?charset=utf8", 200, 200)
 	baseaddress := Get_config("baseaddress")
 	baseport := Get_config("baseport")
 	basename := Get_config("basename")
