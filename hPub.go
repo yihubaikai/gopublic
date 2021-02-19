@@ -152,6 +152,19 @@ func Gettime() string {
 	timestr = fmt.Sprintf("%04d-%02d-%02d %02d:%02d:%02d", Year, Month, Day, Hour, Minute, Second)
 	return timestr
 }
+func GetHour() string {
+	Hour := time.Now().Hour() //小时
+	var timestr string
+	timestr = fmt.Sprintf("%02d", Hour)
+	return timestr
+}
+
+func GetMinute() string {
+	Minute := time.Now().Minute() //分钟
+	var timestr string
+	timestr = fmt.Sprintf("%02d", Minute)
+	return timestr
+}
 
 /*获取日期*/
 func Getday() string {
