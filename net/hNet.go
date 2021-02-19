@@ -3,11 +3,12 @@ package hNet
 import (
 	"encoding/hex"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 //url 编码  "net/url"
@@ -113,7 +114,28 @@ func Httppostz(desurl string, para_kv map[string]string) string {
 	}
 	return string(body)
 }
+func HttppostJson(desurl string, para_kv map[string]string) string {
+	u := url.Values{}
+	for k, v := range para_kv {
+		//fmt.Println(k, "*", v)
+		u.Set(k, v)
+	}
+	fullurl := u.Encode()
+	//fmt.Println(paramstr)
 
+	resp, err := http.Post(desurl, "application/json;charset=utf-8", strings.NewReader(fullurl))
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	defer resp.Body.Close() //not ok
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return string(body)
+}
 func Httppost(desurl string, para_kv map[string]string) string {
 	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
 		err := recover()
