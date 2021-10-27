@@ -3,22 +3,19 @@ package hPub
 import (
 	"crypto/md5"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"io"
 	"io/ioutil"
 	"log"
-
+	"math/rand"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
-)
 
-func Test() {
-	fmt.Println("我是hPub中的test")
-}
+	_ "github.com/go-sql-driver/mysql"
+)
 
 /*获取当前路径
 "path/filepath"
@@ -230,4 +227,55 @@ func StrToInt(numstr string) int64 {
 		return s
 	}
 	return 0
+}
+
+//获取随机
+func GetRand(start, end int) int {
+	//rand.Seed(time.Now().UnixNano())
+	time.Sleep(1)
+	rand.NewSource(time.Now().UnixNano())
+	random := rand.Intn(end - start)
+	random = start + random
+	return random
+}
+
+func GetRandStr(start, end int) string {
+	//rand.Seed(time.Now().UnixNano())
+	time.Sleep(1)
+	rand.NewSource(time.Now().UnixNano())
+	random := rand.Intn(end - start)
+	random = start + random
+	ranstr := fmt.Sprintf("%d", random)
+	return ranstr
+}
+
+//截取字符串
+func Substr(str string, start, length int) string {
+	rs := []rune(str)
+	rl := len(rs)
+	end := 0
+
+	if start < 0 {
+		start = rl - 1 + start
+	}
+	end = start + length
+
+	if start > end {
+		start, end = end, start
+	}
+
+	if start < 0 {
+		start = 0
+	}
+	if start > rl {
+		start = rl
+	}
+	if end < 0 {
+		end = 0
+	}
+	if end > rl {
+		end = rl
+	}
+
+	return string(rs[start:end])
 }
