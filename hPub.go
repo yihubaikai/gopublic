@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 )
 
 /*获取当前路径
@@ -38,31 +38,33 @@ func SaveLog(m_FilePath string, val string) {
 	if len(m_FilePath) > 1 && string([]byte(m_FilePath)[1:2]) == ":" {
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(m_FilePath, filename)
-		//print("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		fmt.Println("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	} else {
 		dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 		dir = dir + "/" + m_FilePath
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(dir, filename)
-		//print("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		fmt.Println("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	}
 
 	p := dir + "/" + filename
 	p = strings.Replace(p, "\\", "/", -1)
 	p = strings.Replace(p, "//", "/", -1)
-	//print("fullpath" + p + "\n")
+	fmt.Println("fullpath:" + p + "\n")
+	
 	_, err := os.Stat(dir)
 	if err != nil {
 		if !os.IsExist(err) {
 			os.MkdirAll(dir, os.ModePerm)
 		}
 	}
-	fl, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE, 0644)
+	fl, err := os.OpenFile(p, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModeAppend|os.ModePerm)
 	defer fl.Close()
 
 	if err != nil {
 		fmt.Println("SaveLog:error")
 	} else {
+	    fmt.Println("SaveLog:SUCC")
 		io.WriteString(fl, val)
 	}
 }
