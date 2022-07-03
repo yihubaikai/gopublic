@@ -77,7 +77,7 @@ func RunWork(url string, _chat_id string) {
 	}
 }
 
-/*
+/*00000
 #telegram-send --configure
 #token =  "5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"
 
