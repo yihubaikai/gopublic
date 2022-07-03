@@ -30,6 +30,8 @@ func Sleep(){
 func chans_init(){
 	if(iStart == 0){
 		iStart = 1
+		fmt.Println("****************RunWork start****************")
+		fmt.Println("****************RunWork end******************")
 		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
 	}
 }
@@ -37,7 +39,9 @@ func chans_init(){
 //传入请求
 func PutString(text string) string {
 	if(iStart == 0){
+		fmt.Println("****************chans_init start****************")
 		chans_init()
+		fmt.Println("****************chans_init end******************")
 	}
 	jobs <- string(text)
 	fmt.Println("PutString:", text)
@@ -62,7 +66,7 @@ func worker(id int, jobs <-chan string) {
 }
 
 
-func RunWork(url string, _chat_id) {
+func RunWork(url string, _chat_id string) {
 	//两个channel，一个用来放置工作项，一个用来存放处理结果。
 	jobs = make(chan string, 1000)
 	_URL    = url
