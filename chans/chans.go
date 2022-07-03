@@ -61,15 +61,15 @@ func GetString(szText string) string {
 //这个是工作线程，处理具体的业务逻辑，将jobs中的任务取出，处理后将处理结果放置在results中。
 func worker(id int, jobs <-chan string) {
 	for j := range jobs {
-		GetString(j)
+	     GetString(j)
 	}
 }
 
 
-func RunWork(url, _chat_id string) {
+func RunWork(_url, _chat_id string) {
 	//两个channel，一个用来放置工作项，一个用来存放处理结果。
 	jobs = make(chan string, 1000)
-	_URL    = url
+	_URL    = _url
 	_CHATID = _chat_id
 	// 开启三个线程，也就是说线程池中只有3个线程，实际情况下，我们可以根据需要动态增加或减少线程。
 	for w := 0; w < 10; w++ {
