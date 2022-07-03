@@ -66,7 +66,7 @@ func worker(id int, jobs <-chan string) {
 }
 
 
-func RunWork(url string, _chat_id string) {
+func RunWork(url, _chat_id string) {
 	//两个channel，一个用来放置工作项，一个用来存放处理结果。
 	jobs = make(chan string, 1000)
 	_URL    = url
