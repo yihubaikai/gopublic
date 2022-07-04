@@ -15,5 +15,5 @@ import (
         "github.com/yihubaikai/gopublic"     //公共库<br>
         "github.com/yihubaikai/gopublic/net" //网络库<br>
         "github.com/yihubaikai/gopublic/sql" //sql库<br>
-        "github.com/yihubaikai/gopublic/chans" //telnetgram Bot 库<br>
+        "github.com/yihubaikai/gopublic/chans" //telnetgram Bot 库<br>增加关键字过滤
 )
