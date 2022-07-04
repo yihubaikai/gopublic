@@ -9,11 +9,11 @@ import (
 
 //------------群处理模块----------------------------start  --------------------
 //全局变量
-
-var jobs chan string;
-var _URL      string
-var _CHATID   string
-var iStart    int = 0;
+var jobs chan string;              //数据通道
+var _URL      string               //请求URL
+var _CHATID   string               //聊天ID
+var Filter_Arr map[string]string   //过滤字符串
+var iStart    int = 0;             //初始化标识
 
 //--------------------------------------------------
 //定义两个结构体
@@ -22,17 +22,48 @@ type Server struct {
 	Link string `json:"link"`
 }
 
-func Sleep(){
-	time.Sleep( 1 )
+
+func Find_Order_Message(inText string, Filter map[string]string)bool{
+	//Filter := [...]string{"谁","有没有","价格","多少钱","来一","带价","接单","哪里","全体成员","能买","报价","优先"}
+	bRet := false
+	for _,val := range Filter{
+		if(strings.Contains(inText, val)){
+			bRet = true
+			break
+		}
+	}
+	return bRet
+}
+
+
+func Split_Init(text, Filt string) (map[string]string){
+	Ret := make(map[string]string)
+	arr := strings.Split(text, Filt)
+	for _, _var := range arr {
+		//fmt.Println(_var)
+		if(len(_var)>0){
+			Ret[_var] = ""
+		}
+	}
+	return Ret
+}
+
+
+
+
+func Sleep(timeN time.Duration){
+	time.Sleep( timeN )
 }
 
 
 func chans_init(){
 	if(iStart == 0){
 		iStart = 1
-		fmt.Println("****************RunWork start****************")
-		fmt.Println("****************RunWork end******************")
+		fmt.Println("****************chans_init Filer****************")
+		Filter_Arr = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		fmt.Println("****************chans_init start****************")
 		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
+		fmt.Println("****************chans_init end******************")
 	}
 }
 
@@ -43,8 +74,11 @@ func PutString(text string) string {
 		chans_init()
 		fmt.Println("****************chans_init end******************")
 	}
-	jobs <- string(text)
-	fmt.Println("PutString:", text)
+	bRet := Find_Order_Message(text, Filter_Arr)
+	if(bRet){
+	    jobs <- string(text)
+	    //fmt.Println("PutString:", text)
+	}
 	return text
 }
 
