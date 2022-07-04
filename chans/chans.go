@@ -3,6 +3,7 @@ package chans
 import (
 	"fmt"
 	"time"
+	"strings"
 	"github.com/yihubaikai/gopublic/net"
 )
 
