@@ -61,7 +61,7 @@ func chans_init(){
 		iStart = 1
 		fmt.Println("****************chans_init Filer****************")
 		KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|腾讯云|阿里云|", "|")
+		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|", "|")
 		fmt.Println("****************chans_init start****************")
 		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
 		fmt.Println("****************chans_init end******************")
