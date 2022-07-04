@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 )
 
 //url 编码  "net/url"
