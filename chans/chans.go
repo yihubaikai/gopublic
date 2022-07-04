@@ -38,6 +38,7 @@ func Find_Order_Message(inText string, Filter map[string]string)bool{
 
 
 func Split_Init(text, Filt string) (map[string]string){
+	fmt.Println("Split_Init:", text)
 	Ret := make(map[string]string)
 	arr := strings.Split(text, Filt)
 	for _, _val := range arr {
@@ -61,7 +62,7 @@ func chans_init(){
 		iStart = 1
 		fmt.Println("****************chans_init Filer****************")
 		KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|", "|")
+		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
 		fmt.Println("****************chans_init start****************")
 		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
 		fmt.Println("****************chans_init end******************")
@@ -117,7 +118,7 @@ func RunWork(_url, _chat_id string) {
 
 /*
 KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物", "|")
+FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
 			
 #telegram-send --configure
 #token =  "5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"
