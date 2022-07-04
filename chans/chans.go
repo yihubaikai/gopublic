@@ -12,7 +12,8 @@ import (
 var jobs chan string;              //数据通道
 var _URL      string               //请求URL
 var _CHATID   string               //聊天ID
-var Filter_Arr map[string]string   //过滤字符串
+var KeyWords  map[string]string     //关键字字符串
+var FilterWords map[string]string   //过滤字符串
 var iStart    int = 0;             //初始化标识
 
 //--------------------------------------------------
@@ -25,8 +26,8 @@ type Server struct {
 
 func Find_Order_Message(inText string, Filter map[string]string)bool{
 	bRet := false
-	for _,val := range Filter{
-		if(strings.Contains(inText, val)){
+	for key,_ := range Filter{
+		if(strings.Contains(inText, key)){
 			bRet = true
 			break
 		}
@@ -38,10 +39,9 @@ func Find_Order_Message(inText string, Filter map[string]string)bool{
 func Split_Init(text, Filt string) (map[string]string){
 	Ret := make(map[string]string)
 	arr := strings.Split(text, Filt)
-	for _, _var := range arr {
-		//fmt.Println(_var)
-		if(len(_var)>0){
-			Ret[_var] = ""
+	for _, _val := range arr {
+		if(len(_val)>0){
+			Ret[_val] = _val
 		}
 	}
 	return Ret
@@ -59,7 +59,8 @@ func chans_init(){
 	if(iStart == 0){
 		iStart = 1
 		fmt.Println("****************chans_init Filer****************")
-		Filter_Arr = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物", "|")
 		fmt.Println("****************chans_init start****************")
 		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
 		fmt.Println("****************chans_init end******************")
@@ -73,10 +74,13 @@ func PutString(text string) string {
 		chans_init()
 		fmt.Println("****************chans_init end******************")
 	}
-	bRet := Find_Order_Message(text, Filter_Arr)
+	fRet := Find_Order_Message(text, FilterWords)
+	if(fRet){
+	        return text
+	}
+	bRet := Find_Order_Message(text, KeyWords)
 	if(bRet){
 	    jobs <- string(text)
-	    //fmt.Println("PutString:", text)
 	}
 	return text
 }
@@ -110,7 +114,10 @@ func RunWork(_url, _chat_id string) {
 	}
 }
 
-/*00000
+/*
+KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物", "|")
+			
 #telegram-send --configure
 #token =  "5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"
 
