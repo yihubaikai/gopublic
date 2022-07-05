@@ -2,7 +2,6 @@ package chans
 
 import (
 	"fmt"
-	"time"
 	"strings"
 	"github.com/yihubaikai/gopublic/net"
 	"github.com/jinzhu/configor"      //配置文件
@@ -10,17 +9,16 @@ import (
 )
 
 
-//------------群处理模块----------------------------start  --------------------
-//全局变量
-var jobs chan string;              //数据通道
-var _URL      string               //请求URL
-var _CHATID   string               //聊天ID
+//------------全局变量---------------------------- 
+var jobs chan string;               //数据通道
+var _URL      string                //请求URL
+var _CHATID   string                //聊天ID
 var KeyWords  map[string]string     //关键字字符串
 var FilterWords map[string]string   //过滤字符串
-var iStart    int = 0;             //初始化标识
+var iStart    int = 0;              //初始化标识
 
-//--------------------------------------------------
-//定义配置文件存放的结构体
+
+//------------定义配置文件存放的结构体---------------
 var Config = struct {
     AppName string `default:"QQBot"`
 
@@ -37,7 +35,7 @@ var Config = struct {
 
 
 
-
+//-------------查找关键字函数 ------------------------
 func Find_Order_Message(inText string, Filter map[string]string)bool{
 	bRet := false
 	for key,_ := range Filter{
@@ -49,9 +47,9 @@ func Find_Order_Message(inText string, Filter map[string]string)bool{
 	return bRet
 }
 
-
+//------------分割关键字函数----------------------------
 func Split_Init(text, Filt string) (map[string]string){
-	fmt.Println("Split_Init:", text)
+	
 	Ret := make(map[string]string)
 	arr := strings.Split(text, Filt)
 	for _, _val := range arr {
@@ -64,31 +62,30 @@ func Split_Init(text, Filt string) (map[string]string){
 
 
 
-
-func Sleep(timeN time.Duration){
-	time.Sleep( timeN )
-}
-
-
+//--------------------初始化:当iStart==0的时候调用-----------------------
 func chans_init(){
 	if(iStart == 0){
 		iStart = 1
 		fmt.Println("****************chans_init**********************")
+		fmt.Println("Read Config:\n%v", Config)
 		configor.Load(&Config, "qqbot.yml")
-		fmt.Printf("Read Config:\n%v", Config)
+		
 		
 		
 		//KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		 fmt.Println("Split_KeyWords:", Config.Keywords)
 		  KeyWords    = Split_Init( Config.Keywords, "|")
 		
 		//FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
+		fmt.Println("Split_Filterwords:", Config.Filterwords)
 		FilterWords   = Split_Init( Config.Filterwords, "|")
 		
-		fmt.Println("****************chans_init start****************")
+		
 		t := Config.Telegram
 		//go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
+		fmt.Println("RunWork: Url:", t.Url_sendmessage, "Token:",  t.Token)
 		go RunWork(t.Url_sendmessage, t.Token )
-		fmt.Printf("Url:", t.Url_sendmessage, "Token:",  t.Token)
+		
 		
 		fmt.Println("****************chans_init end******************")
 	}
@@ -97,13 +94,13 @@ func chans_init(){
 //传入请求
 func PutString(text string) string {
 	if(strings.Contains(text, "refresh_config")){ //当收到指令:refresh_config
+	   fmt.Println("****************refresh_config******************")
 	    iStart = 0
-	    fmt.Println("****************refresh_config******************")
 	}
 	if(iStart == 0){
-		fmt.Println("****************chans_init start****************")
+		fmt.Println("****************PutString chans_init****************")
 		chans_init()
-		fmt.Println("****************chans_init end******************")
+		fmt.Println("****************PutString chans_init end******************")
 	}
 	fRet := Find_Order_Message(text, FilterWords)
 	if(fRet){
@@ -175,7 +172,7 @@ func main(){
 
 func main() { //配置文件调用DEMO
     configor.Load(&Config, "qqbot.yml") //加载配置文件读取
-    fmt.Printf("config: %#v", Config)
+    fmt.Println("config: %#v", Config)
     appname := Config.AppName
     filter  := Config.Filterwords
     Keyword := Config.Keywords
