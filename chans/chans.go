@@ -34,7 +34,7 @@ var Config = struct {
    Keywords     string `required:"true" default:"谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先"`
 }{}
 
-
+ 
 
 //-------------查找关键字函数 ------------------------
 func Find_Order_Message(inText string, Filter map[string]string)bool{
