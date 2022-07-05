@@ -17,3 +17,5 @@ import (
         "github.com/yihubaikai/gopublic/sql" //sql库<br>
         "github.com/yihubaikai/gopublic/chans" //telnetgram Bot 库<br>
 )
+
+#2022-07-5: 增加hPub.Sleep(time*m) 函数
