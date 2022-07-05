@@ -79,7 +79,7 @@ func chans_init(){
 		
 		
 		//KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-		Keywords      = Split_Init( Config.Keywords, "|")
+		  KeyWords    = Split_Init( Config.Keywords, "|")
 		
 		//FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
 		FilterWords   = Split_Init( Config.Filterwords, "|")
