@@ -13,8 +13,8 @@ import (
 var jobs chan string;               //数据通道
 var _URL      string                //请求URL
 var _CHATID   string                //聊天ID
-var KeyWords  map[string]string     //关键字字符串
-var FilterWords map[string]string   //过滤字符串
+var BotKWords  map[string]string    //关键字字符串
+var BotFWords map[string]string     //过滤字符串
 var iStart    int = 0;              //初始化标识
 
 
@@ -24,7 +24,7 @@ var Config = struct {
 
     Telegram struct {
         Token           string `required:"true" default:"5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"`
-        Chat_id         string `required:"true" default:"954559766"`
+        Chat_id         string `required:"true" default:"0"`#954559766
         Url_getupdates  string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/getUpdates"`
         Url_sendmessage string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage"`
     }
@@ -67,18 +67,18 @@ func chans_init(){
 	if(iStart == 0){
 		iStart = 1
 		fmt.Println("****************chans_init**********************")
-		fmt.Println("Read Config:\n%v", Config)
 		configor.Load(&Config, "qqbot.yml")
+		fmt.Println("Read Config:\n%v", Config)
 		
 		
 		
-		//KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-		 fmt.Println("Split_KeyWords:", Config.Keywords)
-		  KeyWords    = Split_Init( Config.Keywords, "|")
+		//BotKWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		fmt.Println("Split_KeyWords:", Config.Keywords)
+		BotKWords    = Split_Init( Config.Keywords, "|")
 		
-		//FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
+		//BotFWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
 		fmt.Println("Split_Filterwords:", Config.Filterwords)
-		FilterWords   = Split_Init( Config.Filterwords, "|")
+		BotFWords   = Split_Init( Config.Filterwords, "|")
 		
 		
 		t := Config.Telegram
@@ -102,11 +102,11 @@ func PutString(text string) string {
 		chans_init()
 		fmt.Println("****************PutString chans_init end******************")
 	}
-	fRet := Find_Order_Message(text, FilterWords)
+	fRet := Find_Order_Message(text, BotFWords)
 	if(fRet){
 	        return text
 	}
-	bRet := Find_Order_Message(text, KeyWords)
+	bRet := Find_Order_Message(text, BotKWords)
 	if(bRet){
 	    jobs <- string(text)
 	}
