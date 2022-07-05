@@ -31,7 +31,7 @@ var Config = struct {
         Url_sendmessage string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage"`
     }
 
-   Filterwords  string `required:"true" default:"+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎"`
+   Filterwords  string `required:"true" default:"+群"`
    Keywords     string `required:"true" default:"谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先"`
 }{}
 
