@@ -19,12 +19,13 @@ var iStart    int = 0;              //初始化标识
 
 
 //------------定义配置文件存放的结构体---------------
+//954559766
 var Config = struct {
     AppName string `default:"QQBot"`
 
     Telegram struct {
         Token           string `required:"true" default:"5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"`
-        Chat_id         string `required:"true" default:"0"`#954559766
+        Chat_id         string `required:"true" default:"0"`
         Url_getupdates  string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/getUpdates"`
         Url_sendmessage string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage"`
     }
