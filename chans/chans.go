@@ -99,8 +99,8 @@ func chans_init(){
 		
 		t := Config.Telegram
 		//go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
-		fmt.Println("RunWork: Url:", t.Url_sendmessage, "Token:",  t.Token)
-		go RunWork(t.Url_sendmessage, t.Token )
+		fmt.Println("RunWork: Url:", t.Url_sendmessage, "Chat_id:",  t.Chat_id)
+		go RunWork(t.Url_sendmessage, t.Chat_id )
 		
 		
 		fmt.Println("****************chans_init end******************")
@@ -203,4 +203,5 @@ func main() { //配置文件调用DEMO
 }
 
 //测试方法: 加QQ好友,然后发送: refresh_config
+Chat_id
 */
