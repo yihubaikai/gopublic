@@ -5,6 +5,8 @@ import (
 	"time"
 	"strings"
 	"github.com/yihubaikai/gopublic/net"
+	"github.com/jinzhu/configor"      //配置文件
+	
 )
 
 
@@ -18,11 +20,22 @@ var FilterWords map[string]string   //过滤字符串
 var iStart    int = 0;             //初始化标识
 
 //--------------------------------------------------
-//定义两个结构体
-type Server struct {	
-	Name string `json:"name"`
-	Link string `json:"link"`
-}
+//定义配置文件存放的结构体
+var Config = struct {
+    AppName string `default:"QQBot"`
+
+    Telegram struct {
+        Token           string `required:"true" default:"5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E"`
+        Chat_id         string `required:"true" default:"954559766"`
+        Url_getupdates  string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/getUpdates"`
+        Url_sendmessage string `required:"true" default:"https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage"`
+    }
+
+   Filterwords  string `required:"true" default:"+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎"`
+   Keywords     string `required:"true" default:"谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先"`
+}{}
+
+
 
 
 func Find_Order_Message(inText string, Filter map[string]string)bool{
@@ -60,17 +73,33 @@ func Sleep(timeN time.Duration){
 func chans_init(){
 	if(iStart == 0){
 		iStart = 1
-		fmt.Println("****************chans_init Filer****************")
-		KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
-		FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
+		fmt.Println("****************chans_init**********************")
+		configor.Load(&Config, "qqbot.yml")
+		fmt.Printf("Read Config:\n%v", Config)
+		
+		
+		//KeyWords    = Split_Init( "谁|有没有|价格|多少钱|来一|带价|接单|哪里|全体成员|能买|报价|优先", "|")
+		Keywords      = Split_Init( Config.Keywords, "|")
+		
+		//FilterWords = Split_Init( "+群|多赚钱|不禁言|价格优惠|价格实惠|收录|关键词|代写|换群|宠物|企业签|你喜欢的这都有|域名|欢迎", "|")
+		FilterWords   = Split_Init( Config.Filterwords, "|")
+		
 		fmt.Println("****************chans_init start****************")
-		go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
+		t := Config.Telegram
+		//go RunWork("https://api.telegram.org/bot5435489225:AAHa1ch62IOihWUKi6Qir3WiGd3End6RU9E/sendMessage","954559766")
+		go RunWork(t.Url_sendmessage, t.Token )
+		fmt.Printf("Url:", t.Url_sendmessage, "Token:",  t.Token)
+		
 		fmt.Println("****************chans_init end******************")
 	}
 }
 
 //传入请求
 func PutString(text string) string {
+	if(strings.Contains(text, "refresh_config")){ //当收到指令:refresh_config
+	    iStart = 0
+	    fmt.Println("****************refresh_config******************")
+	}
 	if(iStart == 0){
 		fmt.Println("****************chans_init start****************")
 		chans_init()
@@ -143,4 +172,22 @@ func main(){
 	fmt.Print  ("按任意键退出...")
   	fmt.Scanln(&name)
 }
+
+func main() { //配置文件调用DEMO
+    configor.Load(&Config, "qqbot.yml") //加载配置文件读取
+    fmt.Printf("config: %#v", Config)
+    appname := Config.AppName
+    filter  := Config.Filterwords
+    Keyword := Config.Keywords
+    fmt.Println("读取appname:", appname)
+    fmt.Println("读取filter :", filter)
+    fmt.Println("读取Keyword:", Keyword)
+    t       := Config.Telegram
+	fmt.Println("读取token 1:", t.Token)
+	fmt.Println("读取chat_id:", t.Chat_id)
+	fmt.Println("读取updates:", t.Url_getupdates)
+	fmt.Println("读取sendmsg:", t.Url_sendmessage)
+}
+
+//测试方法: 加QQ好友,然后发送: refresh_config
 */
