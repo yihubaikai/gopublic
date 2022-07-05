@@ -250,7 +250,10 @@ func GetRandStr(start, end int) string {
 	ranstr := fmt.Sprintf("%d", random)
 	return ranstr
 }
-
+//延迟:(单位:毫秒)
+func Sleep(timeN time.Duration){
+	time.Sleep( timeN )
+}
 //截取字符串
 func Substr(str string, start, length int) string {
 	rs := []rune(str)
