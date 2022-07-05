@@ -61,6 +61,21 @@ func Split_Init(text, Filt string) (map[string]string){
 }
 
 
+//------------写一个测试函数----------------------
+func Test(text string)bool{
+  iStart = 0
+  chans_init()
+  fRet := Find_Order_Message(text, BotFWords)
+  bRet := Find_Order_Message(text, BotKWords)
+  fmt.Println("fRet:", fRet, "bRet:", bRet)
+  fbRet := false
+  if(!fRet && bRet){
+	fbRet = true	
+  }
+  return fbRet
+}
+
+
 
 //--------------------初始化:当iStart==0的时候调用-----------------------
 func chans_init(){
