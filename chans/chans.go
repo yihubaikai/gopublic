@@ -5,6 +5,7 @@ import (
 	"strings"
 	"github.com/yihubaikai/gopublic/net"
 	"github.com/jinzhu/configor"      //配置文件
+	"os/exec"
 	
 )
 
@@ -38,15 +39,35 @@ var Config = struct {
 
 //-------------查找关键字函数 ------------------------
 func Find_Order_Message(inText string, Filter map[string]string)bool{
-	bRet := false
+	bRet:=false
 	for key,_ := range Filter{
-		if(strings.Contains(inText, key)){
-			bRet = true
-			break
-		}
+	    if(strings.Contains(key, "*")){
+	        //进行*号 分割
+	        iCount1:=0
+	        iCount2:=0
+	        arr := strings.Split(key, "*")
+	        for _,_val := range arr{
+	            if(len(_val)>0){
+	                iCount1=iCount1+1
+	                if(strings.Contains(inText,_val)){
+	                    iCount2=iCount2+1
+	                }
+	            }
+	        }
+	        if(iCount1==iCount2 && iCount1>0){
+	            bRet=true
+	            break
+	        }
+	    }else{
+    	    if(strings.Contains(inText, key)){
+    			bRet=true
+    			break
+    		}   
+	    }
 	}
 	return bRet
 }
+
 
 //------------分割关键字函数----------------------------
 func Split_Init(text, Filt string) (map[string]string){
@@ -61,6 +82,58 @@ func Split_Init(text, Filt string) (map[string]string){
 	return Ret
 }
 
+func Do_Command(cmdline string)string{
+
+    s := []rune(cmdline)
+   iFind := strings.Index(cmdline, "refresh_filter")
+   if(iFind >= 0){
+       fmt.Println(len(cmdline),iFind)
+   	   if(len(cmdline)-iFind==14){
+   	   	 return "refresh_filter:" + FilterStr
+   	   }else{
+   	    fmt.Println("refresh_filter:", s[iFind])
+   	    BotFWords = Split_Init( string(s[iFind:]), "|")
+   	   	return "refresh_filter:" + string(s[iFind:])
+   	   }
+   }
+
+   iFind = strings.Index(cmdline, "refresh_keyword")
+   if(iFind >= 0){
+       fmt.Println(len(cmdline),iFind)
+   	   if(len(cmdline)-iFind==15){
+   	   	 return "refresh_keyword:" + FilterStr
+   	   }else{
+   	   	fmt.Println("refresh_keyword:", s[iFind])
+   	   	BotKWords    = Split_Init( s[iFind:], "|")
+   	   	return "refresh_keyword:" + string(s[iFind:])
+   	   }
+   }
+
+iFind = strings.Index(cmdline, "cmd")
+   if(iFind >= 0){
+      if( string(s[iFind:iFind+3]) == "cmd" ){
+   	   if(len(cmdline)>3){
+   	   		r,_ := Bash(string(s[iFind:]))
+   	   		//fmt.Println("执行系统指令:", string(s[4:]), r)
+   	   		return r
+   	   }
+   }
+  }
+   return ""
+}
+
+func Bash(cmd string) (out string, exitcode int) {
+    cmdobj := exec.Command("bash", "-c", cmd)
+    output, err := cmdobj.CombinedOutput()
+    if err != nil {
+        if ins, ok := err.(*exec.ExitError); ok {
+            out = string(output)
+            exitcode = ins.ExitCode()
+            return out, exitcode        
+        }
+    }
+    return string(output), 0
+}
 
 //------------写一个测试函数----------------------
 func Test(text string)bool{
@@ -109,15 +182,24 @@ func chans_init(){
 
 //传入请求
 func PutString(text string) string {
-	if(strings.Contains(text, "refresh_config")){ //当收到指令:refresh_config
+	/*if(strings.Contains(text, "refresh_config")){ //当收到指令:refresh_config
 	   fmt.Println("****************refresh_config******************")
 	    iStart = 0
-	}
+	}*/
+	
 	if(iStart == 0){
 		fmt.Println("****************PutString chans_init****************")
 		chans_init()
 		fmt.Println("****************PutString chans_init end******************")
 	}
+
+	r := Do_Command(text)
+	if( len(r)>0 ){
+		jobs <- string(r)
+		return r
+	}
+
+
 	fRet := Find_Order_Message(text, BotFWords)
 	if(fRet){
 	        return text
