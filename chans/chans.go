@@ -89,7 +89,7 @@ func Do_Command(cmdline string)string{
    if(iFind >= 0){
        fmt.Println(len(cmdline),iFind)
    	   if(len(cmdline)-iFind==14){
-   	   	 return "refresh_filter:" + FilterStr
+   	   	 return "refresh_filter:" + Config.Filterwords
    	   }else{
    	    fmt.Println("refresh_filter:", s[iFind])
    	    BotFWords = Split_Init( string(s[iFind:]), "|")
@@ -101,7 +101,7 @@ func Do_Command(cmdline string)string{
    if(iFind >= 0){
        fmt.Println(len(cmdline),iFind)
    	   if(len(cmdline)-iFind==15){
-   	   	 return "refresh_keyword:" + FilterStr
+   	   	 return "refresh_keyword:" + Config.Keywords
    	   }else{
    	   	fmt.Println("refresh_keyword:", s[iFind])
 		BotKWords    = Split_Init( string(s[iFind:]), "|")
