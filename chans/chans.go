@@ -104,7 +104,7 @@ func Do_Command(cmdline string)string{
    	   	 return "refresh_keyword:" + FilterStr
    	   }else{
    	   	fmt.Println("refresh_keyword:", s[iFind])
-   	   	BotKWords    = Split_Init( s[iFind:], "|")
+		BotKWords    = Split_Init( string(s[iFind:]), "|")
    	   	return "refresh_keyword:" + string(s[iFind:])
    	   }
    }
