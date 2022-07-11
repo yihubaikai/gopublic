@@ -83,8 +83,9 @@ func Split_Init(text, Filt string) (map[string]string){
 	return Ret
 }
 
-func Do_Command(cmdline string)string{
-
+func Do_Command(cmdlinex string)string{
+    cmdline := strings.Replace(cmdlinex, "\n", "", -1)
+    cmdline  = strings.Replace(cmdline,  "\r", "", -1)
     s := []rune(cmdline)
    iFind := strings.Index(cmdline, "refresh_filter")
    if(iFind >= 0){
