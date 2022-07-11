@@ -84,51 +84,59 @@ func Split_Init(text, Filt string) (map[string]string){
 }
 
 func Do_Command(cmdlinex string)string{
-    cmdline := strings.Replace(cmdlinex, "\n", "", -1)
-    cmdline  = strings.Replace(cmdline,  "\r", "", -1)
-    s := []rune(cmdline)
-   iFind := strings.Index(cmdline, "refresh_filter")
+   cmdline := strings.Replace(cmdlinex, "\n", "", -1)
+   s := []rune(cmdline)
+   k :=  "refresh_keyword:"
+   iFind := strings.Index(cmdline, k)
    if(iFind >= 0){
-       //fmt.Println(len(cmdline),iFind)
-   	   if(len(cmdline)-iFind==14){
-   	   	rf:= ""
-   	   	for _, _val := range  BotFWords{
-   	   		rf = rf + _val + "|"
-   	   	}
-   	   	fmt.Println("refresh_filter:", rf)
-   	   	 return "refresh_filter:" + rf
-   	   }else{
-            fmt.Println(string(s[iFind+15:]))
-   	        BotFWords = Split_Init( string(s[iFind+15:]), "|")
-   	   	return "refresh_filter:" + string(s[iFind+15:])
-   	   }
+   		BotKWords    = Split_Init( string(s[iFind+len(k):]), "|")
+   		rk := ""
+		for _, _val := range  BotKWords{
+		   rk = rk + _val + "|"
+		}
+   	   	return k + rk
    }
 
-   iFind = strings.Index(cmdline, "refresh_keyword")
+   k =  "refresh_keyword"
+   iFind = strings.Index(cmdline, k)
    if(iFind >= 0){
-       //fmt.Println(len(cmdline),iFind)
-   	   if(len(cmdline)-iFind==15){
-   	   	rk:= ""
-   	   	for _, _val := range  BotKWords{
-   	   		rk = rk + _val + "|"
-   	   	}
-   	   	fmt.Println("refresh_keyword:", rk)
-   	   	 return "refresh_keyword:" + rk
-   	   }else{
-		fmt.Println(string(s[iFind+16:]) )
-		BotKWords    = Split_Init( string(s[iFind+16:]), "|")
-   	   	return "refresh_keyword:" +string(s[iFind+16:])
-   	   }
+   		rk := ""
+		for _, _val := range  BotKWords{
+		   rk = rk + _val + "|"
+		}
+   	   return k + ":" + rk
    }
 
-iFind = strings.Index(cmdline, "cmd")
+   k =  "refresh_filter:"
+   iFind = strings.Index(cmdline, k)
    if(iFind >= 0){
-   	   if(len(cmdline)-iFind>3){
-   	   		fmt.Println("执行系统指令:" + string(s[iFind+3+1:]))
-   	   		r,_ := Bash(string(s[iFind+3+1:]))
-   	   		return r
-   	   }
-  }
+   		BotFWords    = Split_Init( string(s[iFind+len(k):]), "|")
+   		rk := ""
+		for _, _val := range  BotFWords{
+		   rk = rk + _val + "|"
+		}
+   	   	return k + rk
+   }
+
+   k =  "refresh_filter"
+   iFind = strings.Index(cmdline, k)
+   if(iFind >= 0){
+   		rk := ""
+		for _, _val := range  BotFWords{
+		   rk = rk + _val + "|"
+		}
+   	   	return k + ":" + rk
+   }
+
+
+	k =  "cmd:"
+    iFind = strings.Index(cmdline, k)
+    if(iFind >= 0){
+   		fmt.Println("执行系统指令:" + string(s[iFind+len(k):]) )
+   	   	r,_ := Bash(string(s[iFind+len(k):]))
+   	   	return r
+   }
+
    return ""
 }
 
