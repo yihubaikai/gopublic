@@ -85,23 +85,10 @@ func Split_Init(text, Filt string) (map[string]string){
 
 func Do_Command(cmdlinex string)string{
    cmdline := strings.Replace(cmdlinex, "\n", "", -1)
-   cmdline = strings.Replace(cmdline, "\r", "", -1)
-   cmdline = strings.Replace(cmdline, "\t", "", -1)
-   s := []rune(cmdline)
    k :=  "refresh_keyword:"
    iFind := strings.Index(cmdline, k)
    if(iFind >= 0){
-        fmt.Println("Len cmdline:", len(cmdline) )
-        fmt.Println("cmdline:", cmdline)
-        fmt.Println("Len s:", len(string(s)))
-        fmt.Println("s:", string(s))
-        
-        fmt.Println("refresh_keyword len(k):", len(k))
-        fmt.Println("iFind:", iFind)
-        fmt.Println("iFind+len:", iFind+len(k))
-        fmt.Println("len s:", len(s))
-        fmt.Println("s:", string(s[iFind+len(k):]))
-   		BotKWords    = Split_Init( string(s[iFind+len(k):]), "|")
+   		BotKWords    = Split_Init( cmdline[iFind+len(k):], "|")
    		rk := ""
 		for _, _val := range  BotKWords{
 		   rk = rk + _val + "|"
@@ -122,16 +109,7 @@ func Do_Command(cmdlinex string)string{
    k =  "refresh_filter:"
    iFind = strings.Index(cmdline, k)
    if(iFind >= 0){
-        fmt.Println("Len cmdline:", len(cmdline) )
-        fmt.Println("cmdline:", cmdline)
-        fmt.Println("Len s:", len(string(s)))
-        fmt.Println("s:", string(s))
-        fmt.Println("refresh_filter len(k):", len(k))
-        fmt.Println("iFind:", iFind)
-        fmt.Println("iFind+len:", iFind+len(k))
-        fmt.Println("len s:", len(s))
-        fmt.Println("s:", string(s[iFind+len(k):]))
-   		BotFWords    = Split_Init( string(s[iFind+len(k):]), "|")
+   		BotFWords    = Split_Init( cmdline[iFind+len(k):], "|")
    		rk := ""
 		for _, _val := range  BotFWords{
 		   rk = rk + _val + "|"
@@ -153,13 +131,14 @@ func Do_Command(cmdlinex string)string{
 	k =  "cmd:"
     iFind = strings.Index(cmdline, k)
     if(iFind >= 0){
-   		fmt.Println("执行系统指令:" + string(s[iFind+len(k):]) )
-   	   	r,_ := Bash(string(s[iFind+len(k):]))
+   		fmt.Println("执行系统指令:"+cmdline[iFind+len(k):]) 
+   	   	r,_ := Bash(cmdline[iFind+len(k):])
    	   	return r
    }
 
    return ""
 }
+
 
 func Bash(cmd string) (out string, exitcode int) {
 	fmt.Println(cmd)
