@@ -6,6 +6,7 @@ import (
 	"github.com/yihubaikai/gopublic/net"
 	"github.com/jinzhu/configor"      //配置文件
 	"os/exec"
+	"runtime"
 	
 )
 
@@ -87,52 +88,77 @@ func Do_Command(cmdline string)string{
     s := []rune(cmdline)
    iFind := strings.Index(cmdline, "refresh_filter")
    if(iFind >= 0){
-       fmt.Println(len(cmdline),iFind)
+       //fmt.Println(len(cmdline),iFind)
    	   if(len(cmdline)-iFind==14){
-   	   	 return "refresh_filter:" + Config.Filterwords
+   	   	rf:= ""
+   	   	for _, _val := range  BotFWords{
+   	   		rf = rf + _val + "|"
+   	   	}
+   	   	fmt.Println("refresh_filter:", rf)
+   	   	 return "refresh_filter:" + rf
    	   }else{
-                fmt.Println("refresh_filter:", string(s[iFind:]))
-   	        BotFWords = Split_Init( string(s[iFind:]), "|")
-   	   	return "refresh_filter:" + string(s[iFind:])
+            fmt.Println(string(s[iFind+15:]))
+   	        BotFWords = Split_Init( string(s[iFind+15:]), "|")
+   	   	return "refresh_filter:" + string(s[iFind+15:])
    	   }
    }
 
    iFind = strings.Index(cmdline, "refresh_keyword")
    if(iFind >= 0){
-       fmt.Println(len(cmdline),iFind)
+       //fmt.Println(len(cmdline),iFind)
    	   if(len(cmdline)-iFind==15){
-   	   	 return "refresh_keyword:" + Config.Keywords
+   	   	rk:= ""
+   	   	for _, _val := range  BotKWords{
+   	   		rk = rk + _val + "|"
+   	   	}
+   	   	fmt.Println("refresh_keyword:", rk)
+   	   	 return "refresh_keyword:" + rk
    	   }else{
-		fmt.Println("refresh_keyword:",string(s[iFind:]) )
-		BotKWords    = Split_Init( string(s[iFind:]), "|")
-   	   	return "refresh_keyword:" + string(s[iFind:])
+		fmt.Println(string(s[iFind+16:]) )
+		BotKWords    = Split_Init( string(s[iFind+16:]), "|")
+   	   	return "refresh_keyword:" +string(s[iFind+16:])
    	   }
    }
 
 iFind = strings.Index(cmdline, "cmd")
    if(iFind >= 0){
-      if( string(s[iFind:iFind+3]) == "cmd" ){
-   	   if(len(cmdline)>3){
-   	   		r,_ := Bash(string(s[iFind:]))
-   	   		//fmt.Println("执行系统指令:", string(s[4:]), r)
+   	   if(len(cmdline)-iFind>3){
+   	   		fmt.Println("执行系统指令:" + string(s[iFind+3+1:]))
+   	   		r,_ := Bash(string(s[iFind+3+1:]))
    	   		return r
    	   }
-   }
   }
    return ""
 }
 
 func Bash(cmd string) (out string, exitcode int) {
-    cmdobj := exec.Command("bash", "-c", cmd)
-    output, err := cmdobj.CombinedOutput()
-    if err != nil {
-        if ins, ok := err.(*exec.ExitError); ok {
-            out = string(output)
-            exitcode = ins.ExitCode()
-            return out, exitcode        
-        }
+	fmt.Println(cmd)
+	sysType := runtime.GOOS
+	if(sysType == "windows"){
+	    cmdobj := exec.Command("cmd.exe", "/c", cmd)
+	    output, err := cmdobj.CombinedOutput()
+	    if err != nil {
+	        if ins, ok := err.(*exec.ExitError); ok {
+	            out = string(output)
+	            exitcode = ins.ExitCode()
+	            return out, exitcode        
+	        }
+	    }
+	    return string(output), 0
+    }else if(sysType == "linux"){
+ 		cmdobj := exec.Command("bash", "-c", cmd)
+	    output, err := cmdobj.CombinedOutput()
+	    if err != nil {
+	        if ins, ok := err.(*exec.ExitError); ok {
+	            out = string(output)
+	            exitcode = ins.ExitCode()
+	            return out, exitcode        
+	        }
+	    }
+	    return string(output), 0
+    }else{
+    	return "", 0
     }
-    return string(output), 0
 }
 
 //------------写一个测试函数----------------------
