@@ -133,7 +133,11 @@ func Do_Command(cmdlinex string)string{
     if(iFind >= 0){
    		fmt.Println("执行系统指令:"+cmdline[iFind+len(k):]) 
    	   	r,_ := Bash(cmdline[iFind+len(k):])
-   	   	return r
+	    if(len(r)>200){
+		    return r[:200]
+	    }else{
+		return r
+	    }
    }
 
    return ""
