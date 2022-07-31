@@ -214,7 +214,7 @@ func Get_FuncName(iDeep int) string {
 	return ret[1]
 }
 
-//加个MD5字符串
+//加个MD5字符串 更新一下
 func Md5str(mingwen_text string) string {
 	data := []byte(mingwen_text)
 	has := md5.Sum(data)
