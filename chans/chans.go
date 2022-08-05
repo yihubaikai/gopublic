@@ -274,7 +274,7 @@ func RunWork(_url, _chat_id string) {
 	_URL    = _url
 	_CHATID = _chat_id
 	// 开启三个线程，也就是说线程池中只有3个线程，实际情况下，我们可以根据需要动态增加或减少线程。
-	for w := 0; w < 10; w++ {
+	for w := 0; w < 20; w++ {
 		go worker(w, jobs)
 	}
 }
