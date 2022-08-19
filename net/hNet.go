@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	 "crypto/tls"
 
 	//_ "github.com/go-sql-driver/mysql"
 )
