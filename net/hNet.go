@@ -59,8 +59,11 @@ func Httpgetz(desurl string, para_kv map[string]string) string {
 		}
 		fullurl = desurl + "?" + u.Encode()
 	}
-
-	resp, err := http.Get(fullurl)
+tr := &http.Transport{
+        TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+    }
+   	client := &http.Client{Transport: tr}
+	resp, err := client.Get(fullurl)
 
 	if err != nil {
 		fmt.Println(err)
@@ -101,7 +104,13 @@ func Httppostz(desurl string, para_kv map[string]string) string {
 	fullurl := u.Encode()
 	//fmt.Println(paramstr)
 
-	resp, err := http.Post(desurl, "application/x-www-form-urlencoded;charset=utf-8", strings.NewReader(fullurl))
+	//跳过证书检测
+	 tr := &http.Transport{
+        TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+    }
+    client := &http.Client{Transport: tr}
+
+	resp, err := client.Post(desurl, "application/x-www-form-urlencoded;charset=utf-8", strings.NewReader(fullurl))
 	if err != nil {
 		fmt.Println(err)
 		return ""
