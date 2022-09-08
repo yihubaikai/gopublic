@@ -38,19 +38,19 @@ func SaveLog(m_FilePath string, val string) {
 	if len(m_FilePath) > 1 && string([]byte(m_FilePath)[1:2]) == ":" {
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(m_FilePath, filename)
-		fmt.Println("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		//fmt.Println("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	} else {
 		dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 		dir = dir + "/" + m_FilePath
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(dir, filename)
-		fmt.Println("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		//fmt.Println("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	}
 
 	p := dir + "/" + filename
 	p = strings.Replace(p, "\\", "/", -1)
 	p = strings.Replace(p, "//", "/", -1)
-	fmt.Println("fullpath:" + p + "\n")
+	//fmt.Println("fullpath:" + p + "\n")
 	
 	_, err := os.Stat(dir)
 	if err != nil {
@@ -79,33 +79,69 @@ func SaveLogEx(val string) {
 }
 
 /*读取文件*/
-func ReadLog(m_FilePath string) string {
+func ReadLog(m_FilePath string, iSeek int64) string {
 	var dir, filename string
 	filename = filepath.Base(m_FilePath)
 	if len(m_FilePath) > 1 && string([]byte(m_FilePath)[1:2]) == ":" {
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(m_FilePath, filename)
-		//print("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		//fmt.Println("abspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	} else {
 		dir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 		dir = dir + "/" + m_FilePath
 		filename = filepath.Base(m_FilePath)
 		dir = strings.TrimSuffix(dir, filename)
-		//print("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
+		//fmt.Println("noptabspath:filename:" + filename + "\n" + "dir:" + dir + "\n")
 	}
+
 	p := dir + "/" + filename
 	p = strings.Replace(p, "\\", "/", -1)
 	p = strings.Replace(p, "//", "/", -1)
-	if !File_Exists(p) {
+	//fmt.Println("fullpath:" + p + "\n")
+
+	_, err := os.Stat(dir)
+	if err != nil {
 		return ""
 	}
-	fi, err := os.Open(p)
-	defer fi.Close()
+
+	//fmt.Println(p)
+	fl, err := os.OpenFile(p, os.O_RDWR, os.ModePerm)
+	defer fl.Close()
 	if err != nil {
-		panic(err)
+		fmt.Println("File is Not Found")
+		return ""
 	}
-	fd, err := ioutil.ReadAll(fi)
-	return string(fd)
+
+	//读取最后1K
+	iStart := int64(0)      //读取文本的开始位置
+	stat, err := os.Stat(p) //读取文本大小
+	iSize := stat.Size()    //申请内存空间大小
+
+	if stat.Size() > iSeek {
+		iStart = stat.Size() - iSeek
+		iSize = iSeek
+	}
+
+	sLen, err1 := fl.Seek(iStart, io.SeekStart)
+	t := "SUCC"
+	if err1 != nil {
+		t = "Seek Error!"
+	}
+	//fmt.Println("读取文件开始位置:", iStart, "申请内存大小:", iSize, "实际文件大小:", stat.Size(), "Seek文件大小:", sLen, t)
+	buf := make([]byte, iSize)
+	fl.Read(buf)
+	ret := string(buf) //fmt.Sprintf("%s",string(buf))
+	//fmt.Println(ret)
+	return ret
+
+	/* 全部读取
+	ret := ""
+	scanner := bufio.Newscanner(fl)
+	for scanner.Scan(){
+		ret = ret + scanner.Text()
+	}
+	return ret
+	*/
 }
 
 /* 判断文件是否存在  存在返回 true 不存在返回false*/
@@ -154,7 +190,7 @@ func Gettime() string {
 func GetHour() string {
 	Hour := time.Now().Hour() //小时
 	var timestr string
-	timestr = fmt.Sprintf("%02d", Hour)
+	imestr = fmt.Sprintf("%02d", Hour)
 	return timestr
 }
 
@@ -252,7 +288,7 @@ func GetRandStr(start, end int) string {
 }
 //延迟:(单位:毫秒)
 func Sleep(timeN time.Duration){
-	time.Sleep( timeN )
+	time.Sleep(time.Second * timeN )
 }
 //截取字符串
 func Substr(str string, start, length int) string {
